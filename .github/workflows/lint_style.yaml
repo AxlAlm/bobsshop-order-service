@@ -1,0 +1,27 @@
+name: lint_style
+
+on: [push]
+
+jobs:
+  lint_style:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10"]
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Poetry
+        run: pipx install poetry
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "poetry"
+      - name: Install dependencies
+        run: poetry install
+      - name: Lint with ruff
+        run: poetry run ruff check .
+      - name: check style with black
+        run: poetry run black .
+      - name: check style with isort
+        run: poetry run isort .

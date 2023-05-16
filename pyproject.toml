@@ -8,6 +8,7 @@ packages = [{include = "bobsshop_order_service"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+pydantic = "^1.10.7"
 
 
 [tool.poetry.group.dev.dependencies]

@@ -1,5 +1,9 @@
+
+# git
+.git/
+
 # Byte-compiled / optimized / DLL files
-__pycache__/
+__py__/
 *.py[cod]
 *$py.class
 
@@ -42,13 +46,13 @@ htmlcov/
 .nox/
 .coverage
 .coverage.*
-.cache
+.
 nosetests.xml
 coverage.xml
 *.cover
 *.py,cover
 .hypothesis/
-.pytest_cache/
+.pytest_/
 cover/
 
 # Translations
@@ -63,7 +67,7 @@ db.sqlite3-journal
 
 # Flask stuff:
 instance/
-.webassets-cache
+.webassets-
 
 # Scrapy stuff:
 .scrapy
@@ -139,9 +143,10 @@ venv.bak/
 /site
 
 # mypy
-.mypy_cache/
+.mypy_/
 .dmypy.json
 dmypy.json
+.mypy_cache/
 
 # Pyre type checker
 .pyre/
@@ -160,3 +165,7 @@ cython_debug/
 #.idea/
 
 .aws-sam/
+
+
+#
+.ruff_cache/

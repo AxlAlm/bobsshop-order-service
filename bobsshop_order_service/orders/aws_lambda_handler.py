@@ -3,7 +3,7 @@ import json
 from bobsshop_order_service.orders.services import create, get
 
 
-def get(event, context):
+def get_handler(event, context):
     """Sample pure Lambda function
 
     Parameters
@@ -35,7 +35,7 @@ def get(event, context):
     }
 
 
-def create(event, context):
+def create_handler(event, context):
     return {
         "statusCode": 200,
         "body": json.dumps(

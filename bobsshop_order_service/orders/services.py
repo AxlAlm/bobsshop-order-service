@@ -11,6 +11,6 @@ def get(id: int) -> Order:
 
 def create(order: OrderCreate) -> Order:
     id = len(orders) + 1
-    order = Order({"id": id} | OrderCreate.dict())
-    create[id] = order
-    return order
+    created_order = Order.parse_obj(**{"id": id} | order.dict())
+    orders[id] = created_order
+    return created_order

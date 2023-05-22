@@ -1,6 +1,6 @@
 import json
 
-from bobsshop_order_service.orders.services import create, get
+# from bobsshop_order_service.orders.services import create, get
 
 
 def get_handler(event, context):

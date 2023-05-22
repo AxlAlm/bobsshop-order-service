@@ -35,20 +35,24 @@ Resources:
             Path: /orders
             Method: GET
 
-  OrderCreateFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: bobsshop_order_service/orders/
-      Handler: aws_lambda_handler.create_handler
-      Runtime: python3.10
-      Architectures:
-        - x86_64
-      Events:
-        HttpPostRequest:
-          Type: Api
-          Properties:
-            Path: /orders
-            Method: POST
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: .
+      DockerTag: v1
+  # OrderCreateFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     CodeUri: bobsshop_order_service/orders/
+  #     Handler: aws_lambda_handler.create_handler
+  #     Runtime: python3.10
+  #     Architectures:
+  #       - x86_64
+  #     Events:
+  #       HttpPostRequest:
+  #         Type: Api
+  #         Properties:
+  #           Path: /orders
+  #           Method: POST
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

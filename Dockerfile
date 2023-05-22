@@ -1,14 +1,14 @@
 FROM python:3.10-slim as base
 
-RUN pip install poetry
-
+RUN pip install --upgrade pip 
+RUN pip install poetry poetry==1.4.2
+ 
 COPY ./pyproject.toml ./poetry.lock* ./
 
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 
-
-FROM public.ecr.aws/lambda/python:3.10 as lambda_base
+FROM public.ecr.aws/lambda/python:3.10
 
 COPY --from=base requirements.txt .
 

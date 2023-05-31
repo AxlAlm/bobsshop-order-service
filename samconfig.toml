@@ -5,6 +5,7 @@ version = 0.1
 [default]
 [default.global.parameters]
 stack_name = "bobsshop-order-service"
+s3_prefix = "bobsshop-order-service"
 
 [default.build.parameters]
 cached = true

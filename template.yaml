@@ -10,56 +10,44 @@ Globals:
     MemorySize: 128
 
 Resources:
-  # MyLayer:
-  #   Type: AWS::Serverless::LayerVersion
-  #   Properties:
-  #     ContentUri: bobsshop-order-service-layer
-  #     CompatibleRuntimes:
-  #       - python3.10
-
   OrderGetFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       PackageType: Image
       ImageConfig:
-        Command: ["bobsshop_oder_service.orders.aws_lambda_handler.get_handler"]
-      # CodeUri: bobsshop_order_service/orders/
-      # Handler: aws_lambda_handler.get_handler
-      # Runtime: python3.10
-      # Architectures:
-      #   - x86_64
+        Command:
+          ["bobsshop_order_service.orders.aws_lambda_handler.get_handler"]
       Events:
         HttpGetRequest:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /orders
             Method: GET
-
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: .
       DockerTag: v1
-  # OrderCreateFunction:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     CodeUri: bobsshop_order_service/orders/
-  #     Handler: aws_lambda_handler.create_handler
-  #     Runtime: python3.10
-  #     Architectures:
-  #       - x86_64
-  #     Events:
-  #       HttpPostRequest:
-  #         Type: Api
-  #         Properties:
-  #           Path: /orders
-  #           Method: POST
+  OrderCreateFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      PackageType: Image
+      ImageConfig:
+        Command:
+          ["bobsshop_order_service.orders.aws_lambda_handler.create_handler"]
+      Events:
+        HttpPostRequest:
+          Type: Api
+          Properties:
+            Path: /orders
+            Method: POST
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: .
+      DockerTag: v1
 
 Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  HelloWorldApi:
-    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+  GatewayAPI:
+    Description: "API Gateway endpoint URL for Prod stage"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
   HelloWorldFunction:
     Description: "Hello World Lambda Function ARN"

@@ -1,6 +1,6 @@
 FROM python:3.10-slim as base
 
-RUN pip install --upgrade pip 
+# RUN pip install --upgrade pip 
 RUN pip install poetry poetry==1.4.2
  
 COPY ./pyproject.toml ./poetry.lock* ./
@@ -16,4 +16,4 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY ./bobsshop_order_service ./bobsshop_order_service
 
-CMD ["bobsshop_order_service.orders.aws_lambda_handler.get_handler"]
+CMD ["bobsshop_order_service.orders.aws_lambda_handler.create_handler"]

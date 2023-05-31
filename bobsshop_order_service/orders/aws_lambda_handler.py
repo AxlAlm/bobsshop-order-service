@@ -1,6 +1,7 @@
 import json
 
-from bobsshop_order_service.orders.services import get
+from bobsshop_order_service.orders.schemas import OrderCreate
+from bobsshop_order_service.orders.services import create, get
 
 
 def get_handler(event, context):
@@ -24,19 +25,15 @@ def get_handler(event, context):
 
         Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
     """
-    return {"statusCode": 200, "body": get(id=1)}
+
+    return {"statusCode": 200, "body": get(id=1).json()}
 
 
 def create_handler(event, context):
-    return {
-        "statusCode": 200,
-        "body": json.dumps(
-            {
-                "message": "hello POST",
-                # "location": ip.text.replace("\n", "")
-            }
-        ),
-    }
+    print(event)
+    print(type(event))
+    order_create = OrderCreate.parse_obj(**event)
+    return {"statusCode": 201, "body": create(order_create).json()}
 
 
 # def get_handler(event, context):

@@ -1,5 +1,3 @@
-import json
-
 from bobsshop_order_service.orders.schemas import OrderCreate
 from bobsshop_order_service.orders.services import create, get
 

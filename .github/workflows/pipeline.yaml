@@ -42,6 +42,7 @@ jobs:
           role-to-assume: ${{ env.TEST_DOCKER_REPO_EXECUTION_ROLE }}
           role-session-name: test-building
           role-duration-seconds: 3600
+          role-skip-session-tagging: true
 
       - name: Login to Amazon ECR
         id: login-ecr

@@ -42,7 +42,6 @@ jobs:
           role-to-assume: ${{ env.TEST_DOCKER_REPO_EXECUTION_ROLE }}
           role-session-name: test-building
           role-duration-seconds: 3600
-          role-skip-session-tagging: true
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -55,9 +54,9 @@ jobs:
         run: |
           # Build a docker container and
           # push it to ECR so that it can
-          docker build -t $TESTING_IMAGE_REPOSITORY/test:$IMAGE_TAG --target test .
-          docker push $TESTING_IMAGE_REPOSITORY/test:$IMAGE_TAG
-          echo "image=$TESTING_IMAGE_REPOSITORY/test:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          docker build -t $TEST_DOCKER_REPO/test:$IMAGE_TAG --target test .
+          docker push $TEST_DOCKER_REPO/test:$IMAGE_TAG
+          echo "image=$TEST_DOCKER_REPO/test:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
   lint_style:
     runs-on: ubuntu-latest

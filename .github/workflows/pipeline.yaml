@@ -109,7 +109,8 @@ jobs:
         run: |
           # Build a docker container and
           # push it to ECR so that it can
-          docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test
+          docker run $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test ruff check .
 
   # unit-test:
   #   if: github.event_name == 'push'

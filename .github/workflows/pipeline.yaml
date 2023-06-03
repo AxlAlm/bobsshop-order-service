@@ -80,7 +80,7 @@ jobs:
           echo "base-image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-base" >> $GITHUB_OUTPUT
           echo "test-image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test" >> $GITHUB_OUTPUT
 
-  ruff:
+  lint-check:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
@@ -101,19 +101,24 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Pull test image
+        id: pull-image
         env:
           ECR_REPOSITORY: bobsshop-order-service-testing-images
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
           docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test
+
+      - name: run lint check
+        env:
+          ECR_REPOSITORY: bobsshop-order-service-testing-images
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.ref_name }}
+        run: |
           docker run $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test ruff check .
 
-  pyright:
+  type-check:
     runs-on: ubuntu-latest
     needs: [build]
     steps:
@@ -134,21 +139,29 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Pull test image
+        id: pull-image
         env:
           ECR_REPOSITORY: bobsshop-order-service-testing-images
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
           docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test
+
+      - name: run type check
+        env:
+          ECR_REPOSITORY: bobsshop-order-service-testing-images
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.ref_name }}
+        run: |
           docker run $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test pyright .
 
-  black:
+  style-check:
     runs-on: ubuntu-latest
     needs: [build]
+    strategy:
+      matrix:
+        commands: ["black . --check", "isort . --check"]
     steps:
       - uses: actions/checkout@v3
 
@@ -167,50 +180,56 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: Pull test image
+        id: pull-image
         env:
           ECR_REPOSITORY: bobsshop-order-service-testing-images
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
           docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test
-          docker run $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test black . --check
 
-  isort:
-    runs-on: ubuntu-latest
-    needs: [build]
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Assume the testing pipeline user role
-        uses: aws-actions/configure-aws-credentials@v1-node16
-        with:
-          aws-access-key-id: ${{ env.TEST_DOCKER_REPO_USER_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.TEST_DOCKER_REPO_USER_ACCESS_SECRET_KEY }}
-          aws-region: ${{ env.TESTING_REGION }}
-          role-to-assume: ${{ env.TEST_DOCKER_REPO_EXECUTION_ROLE }}
-          role-session-name: test-building
-          role-duration-seconds: 3600
-          role-skip-session-tagging: true
-
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
+      - name: run ${{ matrix.command }}
         env:
           ECR_REPOSITORY: bobsshop-order-service-testing-images
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.ref_name }}
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test
-          docker run $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test isort . --check
+          docker run $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test ${{ matrix.command }}
+
+  # unit-test:
+  #   runs-on: ubuntu-latest
+  #   needs: [build]
+  #   steps:
+  #     - uses: actions/checkout@v3
+
+  #     - name: Assume the testing pipeline user role
+  #       uses: aws-actions/configure-aws-credentials@v1-node16
+  #       with:
+  #         aws-access-key-id: ${{ env.TEST_DOCKER_REPO_USER_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ env.TEST_DOCKER_REPO_USER_ACCESS_SECRET_KEY }}
+  #         aws-region: ${{ env.TESTING_REGION }}
+  #         role-to-assume: ${{ env.TEST_DOCKER_REPO_EXECUTION_ROLE }}
+  #         role-session-name: test-building
+  #         role-duration-seconds: 3600
+  #         role-skip-session-tagging: true
+
+  #     - name: Login to Amazon ECR
+  #       id: login-ecr
+  #       uses: aws-actions/amazon-ecr-login@v1
+
+  #     - name: Pull test image
+  #       id: pull-image
+  #       env:
+  #         ECR_REPOSITORY: bobsshop-order-service-testing-images
+  #         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+  #         IMAGE_TAG: ${{ github.ref_name }}
+  #       run: |
+  #         docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test
+
+  #     - name: Pull test image
+  #       run: |
+  #         docker run $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test isort . --check
 
   # lint_style:
   #   runs-on: ubuntu-latest

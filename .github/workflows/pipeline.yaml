@@ -234,6 +234,29 @@ jobs:
       - name: check typing with pyright
         run: poetry run pyright .
 
+    lint_style2:
+    needs: [lint_style]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Poetry
+        run: pipx install poetry
+      - name: Set up Python "3.10"
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "poetry"
+      - name: Install dependencies
+        run: poetry install
+      - name: linting with ruff
+        run: poetry run ruff check .
+      - name: check style with black
+        run: poetry run black . --check
+      - name: check imports with isort
+        run: poetry run isort . --check
+      - name: check typing with pyright
+        run: poetry run pyright .
+
   # unit-test:
   #   if: github.event_name == 'push'
   #   runs-on: ubuntu-latest

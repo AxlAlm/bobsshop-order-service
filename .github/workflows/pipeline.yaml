@@ -90,7 +90,7 @@ jobs:
         env:
           ECR_REPOSITORY: bobsshop-order-service-testing-images
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
+          IMAGE_TAG: XXX # ${{ github.sha }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can

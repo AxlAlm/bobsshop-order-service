@@ -65,27 +65,27 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-  # lint_style_check:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #     - name: Install Poetry
-  #       run: pipx install poetry
-  #     - name: Set up Python 3.10
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: "3.10"
-  #         cache: "poetry"
-  #     - name: Install dependencies
-  #       run: poetry install
-  #     - name: linting with ruff
-  #       run: poetry run ruff check .
-  #     - name: check style with black
-  #       run: poetry run black . --check
-  #     - name: check imports with isort
-  #       run: poetry run isort . --check
-  #     - name: check typing with pyright
-  #       run: poetry run pyright .
+  lint_style_check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Poetry
+        run: pipx install poetry
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: "poetry"
+      - name: Install dependencies
+        run: poetry install
+      - name: linting with ruff
+        run: poetry run ruff check .
+      - name: check style with black
+        run: poetry run black . --check
+      - name: check imports with isort
+        run: poetry run isort . --check
+      - name: check typing with pyright
+        run: poetry run pyright .
 
   # unit-test:
   #   if: github.event_name == 'push'

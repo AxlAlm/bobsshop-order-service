@@ -2,7 +2,7 @@ FROM python:3.10-slim as base
 
 # RUN pip install --upgrade pip 
 RUN pip install poetry poetry==1.4.2
- 
+
 COPY ./pyproject.toml ./poetry.lock* ./
 
 RUN poetry export -f requirements.txt --output requirements.txt --without-hashes
@@ -11,7 +11,10 @@ RUN poetry export -f requirements.txt --output dev_requirements.txt --without-ha
 
 FROM python:3.10-slim as test
 
+WORKDIR /app
+
 COPY --from=base dev_requirements.txt .
+COPY --from=base pyproject.toml .
 
 RUN pip install --no-cache-dir --upgrade -r dev_requirements.txt
 
@@ -19,6 +22,8 @@ COPY ./bobsshop_order_service ./bobsshop_order_service
 
 
 FROM public.ecr.aws/lambda/python:3.10
+
+WORKDIR /app
 
 COPY --from=base requirements.txt .
 

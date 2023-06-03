@@ -68,6 +68,7 @@ jobs:
 
           docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test || true
           docker build \
+            --cache-from $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-base \
             --cache-from $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test \
             -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test \
             --target test \
@@ -110,7 +111,7 @@ jobs:
           # Build a docker container and
           # push it to ECR so that it can
           docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test
-          docker run $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test ruff check .
+          docker run -w bobsshop_order_service/ $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-test ruff check .
 
   # unit-test:
   #   if: github.event_name == 'push'

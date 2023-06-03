@@ -10,6 +10,11 @@ on:
       - "feature**"
 
 env:
+  TEST_DOCKER_REPO_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ECR_CI_ACCESS_KEY_ID }}
+  TEST_DOCKER_REPO_USER_ACCESS_SECRET_KEY: ${{ secrets.AWS_ECR_CI_ACCESS_SECRET_KEY }}
+  TEST_DOCKER_REPO_EXECUTION_ROLE: arn:aws:iam::149394468567:role/erc-bobsshop-order-service-testing-images-exc-role
+  TEST_DOCKER_REPO: 149394468567.dkr.ecr.eu-north-1.amazonaws.com/bobsshop-order-service-testing-images
+
   PIPELINE_USER_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   PIPELINE_USER_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   SAM_TEMPLATE: template.yaml

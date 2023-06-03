@@ -235,8 +235,8 @@ jobs:
         run: poetry run pyright .
 
     lint_style2:
-    needs: [lint_style]
     runs-on: ubuntu-latest
+    needs: [lint_style]
     steps:
       - uses: actions/checkout@v3
       - name: Install Poetry

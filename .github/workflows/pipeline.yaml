@@ -57,7 +57,7 @@ jobs:
         env:
           ECR_REPOSITORY: bobsshop-order-service-testing-images
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.event.ref }}
+          IMAGE_TAG: ${{ github.ref_name }}
         run: |
           docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG-base || true
           docker build \
@@ -105,7 +105,7 @@ jobs:
         env:
           ECR_REPOSITORY: bobsshop-order-service-testing-images
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: XXX # ${{ github.sha }}
+          IMAGE_TAG: ${{ github.ref_name }}
         run: |
           # Build a docker container and
           # push it to ECR so that it can

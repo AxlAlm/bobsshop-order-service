@@ -65,27 +65,36 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-  lint_style_check:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Poetry
-        run: pipx install poetry
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+
+      - name: Assume the testing pipeline user role
+        uses: aws-actions/configure-aws-credentials@v1-node16
         with:
-          python-version: "3.10"
-          cache: "poetry"
-      - name: Install dependencies
-        run: poetry install
-      - name: linting with ruff
-        run: poetry run ruff check .
-      - name: check style with black
-        run: poetry run black . --check
-      - name: check imports with isort
-        run: poetry run isort . --check
-      - name: check typing with pyright
-        run: poetry run pyright .
+          aws-access-key-id: ${{ env.TEST_DOCKER_REPO_USER_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.TEST_DOCKER_REPO_USER_ACCESS_SECRET_KEY }}
+          aws-region: ${{ env.TESTING_REGION }}
+          role-to-assume: ${{ env.TEST_DOCKER_REPO_EXECUTION_ROLE }}
+          role-session-name: test-building
+          role-duration-seconds: 3600
+          role-skip-session-tagging: true
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REPOSITORY: bobsshop-order-service-testing-images
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          docker pull $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
   # unit-test:
   #   if: github.event_name == 'push'
